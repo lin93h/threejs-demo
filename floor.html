@@ -7,6 +7,7 @@
   <title>楼层图</title>
   <script src="./build/three.min.js"></script>
   <script src="./controls/OrbitControls.js"></script>
+  <script src="./libs/threebsp.js"></script>
   <style>
     body {
       margin: 0;
@@ -100,18 +101,40 @@ function customBoxBorder(cube, color) {
   group.add(box2Border);
   group.add(box2);
   //====================//
-  let geo3 = new THREE.Geometry();
-  geo3.vertices.push(
-    new THREE.Vector3(-3.5, 0, 1.5),
-    new THREE.Vector3(-3.5, 1, 1.5),
-    new THREE.Vector3(-6.5, 0, 1.5),
-    new THREE.Vector3(-6.5, 1, 1.5),
-  )
-  geo3.faces.push(new THREE.Face3(0, 1, 2));
-  geo3.computeBoundingSphere();
-  let geo3M = new THREE.MeshBasicMaterial({color: 0xF8ADAA, side: THREE.DoubleSide})
-  let geo3Mesh = new THREE.Mesh(geo3, geo3M);
-  scene.add(geo3Mesh);
+  // 用threebsp创建几何组合
+  let cylinderGeometry = new THREE.BoxGeometry(3,1,3);
+  let boxGeometry = new THREE.BoxGeometry(1,1,1);
+
+  // 创建材质
+  let materials = new THREE.MeshBasicMaterial({wireframe: true});
+
+  // 创建Mesh
+  let cylinder = new THREE.Mesh(cylinderGeometry,materials);
+  let cbox = new THREE.Mesh(boxGeometry, materials);
+  cylinder.position.set(-5, 0.5, 0)
+  cbox.position.set(-6, 0.5, -1);
+  // group.add(cylinder);
+  // group.add(cbox);
+  let cylinderBSP = new ThreeBSP(cylinder);
+  let boxBSP = new ThreeBSP(cbox);
+  let result = cylinderBSP.subtract(boxBSP);
+
+  // 将BSP对象转化为Mesh对象
+  let cmesh = result.toMesh();
+  cmesh.geometry.computeFaceNormals();
+  cmesh.geometry.computeVertexNormals();
+
+  // 重新为mesh赋一个材质
+  cmesh.material = new THREE.MeshBasicMaterial({color: 0xF8ACAC});
+  // console.log("点：", cmesh.geometry)
+  let geo = new THREE.EdgesGeometry( cmesh.geometry ); // or WireframeGeometry( geometry )
+
+  let mat = new THREE.LineBasicMaterial( { color: 0xdddddd, linewidth: 2 } );
+
+  let wireframe = new THREE.LineSegments( geo, mat );
+  wireframe.position.set(-5, 0.49, 0);
+  group.add(cmesh);
+  scene.add( wireframe );
 
   scene.add(group);
   
