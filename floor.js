@@ -1,4 +1,12 @@
 window.onload = function() {
+  const CONFIG = {
+    red: 0xF8ACAC,
+    blue: 0x84A3E4,
+    lightBlue: 0xA0C6DB,
+    green: 0x77CC91,
+    yellow: 0xEED18D,
+    borderColor: 0x101010,
+  }
   // 实例box几何
   function createBoxGeo(param) {
     let geometry = new THREE.BoxGeometry(param.width, param.height, param.depth);
@@ -15,7 +23,7 @@ window.onload = function() {
   }
 
   // 立方体边缘线
-  function customBoxBorder(param) {
+  function createBoxBorder(param) {
     let boxBorder = new THREE.BoxHelper(param.mesh, param.color);
     boxBorder.material.blending = THREE.AdditiveBlending;
     boxBorder.material.transparent = true;
@@ -50,19 +58,39 @@ window.onload = function() {
   // 添加方向辅助线
   scene.add( new THREE.AxesHelper(5));
   // 添加网格
-  scene.add(new THREE.GridHelper(20, 20));
+  scene.add(new THREE.GridHelper(50, 50));
   // 将渲染器挂载到节点
   document.getElementById("floor").appendChild(renderer.domElement);
 
   // 创建组对象
-  var group = new THREE.Group();
+  let group_center = new THREE.Group();
+  let group_north = new THREE.Group();
+  let group_east = new THREE.Group();
+  let group_south = new THREE.Group();
+  let group_west = new THREE.Group();
+
+  /**
+   * 中部区域组
+   */
+  let center_geo_0 = createBoxGeo({ width: 2, height: 1, depth: 2, color: CONFIG.lightBlue });
+  center_geo_0.position.set(-3, 0, -3);
+  let center_border_0 = createBoxBorder({ mesh: center_geo_0, color: CONFIG.borderColor });
+  let center_geo_1 = createBoxGeo({ width: 1, height: 1, depth: 2, color: CONFIG.lightBlue });
+  center_geo_1.position.set(-1.5, 0, -3);
+  group_center.add(center_geo_0);
+  group_center.add(center_border_0);
+  group_center.add(center_geo_1);
+  scene.add(group_center);
   
+  /**
+   * 南部区域组
+   */
   // 创建区块
   let cube = createBoxGeo({width: 3, height: 1, depth: 3, color: 0x84A3E4});
   cube.position.set(0, 0.5, 0);
-  let cubeBorder = customBoxBorder({mesh: cube, color: 0x101010});
-  group.add(cube);
-  group.add(cubeBorder);
+  let cubeBorder = createBoxBorder({mesh: cube, color: 0x101010});
+  group_south.add(cube);
+  group_south.add(cubeBorder);
   
   // 创建加载器
   let loader = new THREE.FontLoader();
@@ -77,22 +105,22 @@ window.onload = function() {
     let fontM = new THREE.MeshBasicMaterial({color: 0x000000});
     let fontObj = new THREE.Mesh(fontG, fontM);
     fontObj.position.set(0,1,0);
-    group.add(fontObj);
+    group_south.add(fontObj);
   })
   
   // 添加区块
   let box1 = createBoxGeo({ width: 1, height: 1, depth: 3, color: 0x84A3E4 });
   box1.position.set(-2, 0.5, 0);
-  let box1Border = customBoxBorder({mesh: box1, color: 0x101010});
-  group.add(box1Border);
-  group.add(box1);
+  let box1Border = createBoxBorder({mesh: box1, color: 0x101010});
+  group_south.add(box1Border);
+  group_south.add(box1);
   
   // 添加区块
   let box2 = createBoxGeo({ width: 1, height: 1, depth: 3, color: 0x84A3E4 });
   box2.position.set(-3, 0.5, 0);
-  let box2Border = customBoxBorder({mesh: box2, color: 0x101010});
-  group.add(box2Border);
-  group.add(box2);
+  let box2Border = createBoxBorder({mesh: box2, color: 0x101010});
+  group_south.add(box2Border);
+  group_south.add(box2);
   //====================//
   // 用threebsp创建几何组合
   let cylinderGeometry = new THREE.BoxGeometry(3,1,3);
@@ -117,14 +145,17 @@ window.onload = function() {
 
   // 重新为mesh赋一个材质
   cmesh.material = new THREE.MeshBasicMaterial({color: 0xF8ACAC});
-  
-  let wireframe = lineSegments({ mesh: cmesh.geometry, color: 0xdddddd })
+  // 设置边缘线
+  let wireframe = lineSegments({ mesh: cmesh.geometry, color: 0xdddddd });
   wireframe.position.set(-5, 0.49, 0);
-  group.add(cmesh);
-  group.add(wireframe);
-  group.translateX(1.5);
-  group.translateZ(5.5);
-  scene.add(group);
+  group_south.add(cmesh);
+  group_south.add(wireframe);
+  // 整组偏移
+  group_south.translateX(1.5);
+  group_south.translateZ(5.5);
+
+  // 添加组到场景中
+  scene.add(group_south);
   
   var control = new THREE.OrbitControls(camera, renderer.domElement);
   // control.autoRotate = true;  // 自动旋转
