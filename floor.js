@@ -6,7 +6,7 @@ window.onload = function() {
     let mesh = new THREE.Mesh(geometry, material);
     return mesh;
   }
-  
+
   // 不规则几何边缘线
   function lineSegments(param) {
     let edges = new THREE.EdgesGeometry(param.mesh);
@@ -17,30 +17,45 @@ window.onload = function() {
   // 立方体边缘线
   function customBoxBorder(param) {
     let boxBorder = new THREE.BoxHelper(param.mesh, param.color);
-    // boxBorder.material.color.setHex( color );
     boxBorder.material.blending = THREE.AdditiveBlending;
     boxBorder.material.transparent = true;
     return boxBorder;
   }
-  var group = new THREE.Group();
+
+  /**
+   * 创建基础元素，场景、相机、渲染器
+   */
+  // 设置视距比例
   var aspectRatio = window.innerWidth/window.innerHeight;
-  var scene = new THREE.Scene();
-  // scene.background = new THREE.Color( 0xff0000 ); //设置场景背景色
-  var camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
-  camera.position.set(0, 8, 5);
   // 创建场景
+  var scene = new THREE.Scene();
+  //设置场景背景色
+  // scene.background = new THREE.Color( 0xff0000 );
+  //创建相机
+  var camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+  // 设置相机起始位置
+  camera.position.set(0, 8, 5);
+  // 创建渲染器
   var renderer = new THREE.WebGLRenderer(
     { antialias: true }
     // { alpha: true }
-  );  
-  renderer.setClearColor(0xbfe3dd, 1);
-  scene.add( new THREE.AxesHelper( 5 ) );
-  scene.add(new THREE.GridHelper(20, 20))
+  );
+  // 设置渲染器大小，一般都与窗口大小一致
   renderer.setSize(window.innerWidth, window.innerHeight);
-  document.getElementById("floor").appendChild(renderer.domElement);
+  // 环境颜色
+  renderer.setClearColor(0xbfe3dd, 1);
+  // 阴影渲染设置
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  let loader = new THREE.FontLoader();
+  // 添加方向辅助线
+  scene.add( new THREE.AxesHelper(5));
+  // 添加网格
+  scene.add(new THREE.GridHelper(20, 20));
+  // 将渲染器挂载到节点
+  document.getElementById("floor").appendChild(renderer.domElement);
+
+  // 创建组对象
+  var group = new THREE.Group();
   
   // 创建区块
   let cube = createBoxGeo({width: 3, height: 1, depth: 3, color: 0x84A3E4});
@@ -48,7 +63,9 @@ window.onload = function() {
   let cubeBorder = customBoxBorder({mesh: cube, color: 0x101010});
   group.add(cube);
   group.add(cubeBorder);
-
+  
+  // 创建加载器
+  let loader = new THREE.FontLoader();
   // 添加字体
   loader.load('./fonts/helvetiker_regular.typeface.json', function(font) {
     let fontG = new THREE.TextGeometry("aaaaaa", {
@@ -60,7 +77,7 @@ window.onload = function() {
     let fontM = new THREE.MeshBasicMaterial({color: 0x000000});
     let fontObj = new THREE.Mesh(fontG, fontM);
     fontObj.position.set(0,1,0);
-    scene.add(fontObj);
+    group.add(fontObj);
   })
   
   // 添加区块
@@ -104,8 +121,9 @@ window.onload = function() {
   let wireframe = lineSegments({ mesh: cmesh.geometry, color: 0xdddddd })
   wireframe.position.set(-5, 0.49, 0);
   group.add(cmesh);
-  scene.add( wireframe );
-
+  group.add(wireframe);
+  group.translateX(1.5);
+  group.translateZ(5.5);
   scene.add(group);
   
   var control = new THREE.OrbitControls(camera, renderer.domElement);

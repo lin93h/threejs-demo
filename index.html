@@ -4,104 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <title>Three框架</title>
-  <script src="./libs/dat.gui.min.js"></script>
-  <script src="./build/three.js"></script>
-  <script src="./controls/OrbitControls.js"></script>
-  <script src="./controls/TrackballControls.js"></script>
-  <script src="./renderers/CSS3DRenderer.js"></script>
-  <script src="./libs/stats.min.js"></script>
-  <script src="./libs/tweenjs.min.js"></script>
   <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-  <div id="container"></div>
+  <div class="root-wrapper">
+    <div class="list-wrapper">
+      <div class="title">Three.js演示案例</div>
+      <div class="list-details">
+        <ul class="list-inner">
+            <li><a href="floor.html" target="_blank">楼层图</a></li>
+            <li><a href="CSS3DRenderer.html" target="_blank">CSS3D渲染器</a></li>
+          </ul>
+      </div>
+    </div>
+    <div class="desc-wrapper">
+      <div class="">内容</div>
+    </div>
+  </div>
+  
 </body>
-<script>
-  var camera, scene, renderer, orbit, controls, stats;
-
-  init();
-  animate();
-
-  function init() {
-    // 创建相机
-    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.set(0, 100, 500);
-    // 创建场景
-    scene = new THREE.Scene();
-    
-    var element = document.createElement('div');
-    element.className = 'element';
-
-    var circleCenter = document.createElement('div');
-    circleCenter.className = 'circle-center';
-    element.appendChild(circleCenter);
-
-    var xiantianbagua = document.createElement('div');
-    xiantianbagua.className = 'xiantianbagua';
-    var LI = document.createElement('div');
-    LI.className = 'LI XTBG';
-    xiantianbagua.appendChild(LI);
-    var KAN = document.createElement('div');
-    KAN.className = 'KAN XTBG';
-    xiantianbagua.appendChild(KAN);
-    var KUN = document.createElement('div');
-    KUN.className = 'KUN XTBG';
-    xiantianbagua.appendChild(KUN);
-    var QIAN = document.createElement('div');
-    QIAN.className = 'QIAN XTBG';
-    xiantianbagua.appendChild(QIAN);
-    element.appendChild(xiantianbagua)
-
-    var object = new THREE.CSS3DObject(element);
-    scene.add(object);
-
-    //设置light
-    var ambientLight = new THREE.AmbientLight( 0xffffff );
-    scene.add(ambientLight);
-    
-    // 渲染
-    // renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer = new THREE.CSS3DRenderer();
-    // renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById( 'container' ).appendChild( renderer.domElement );
-
-    // 轨道控制
-    controls = new THREE.TrackballControls(camera, renderer.domElement)
-    controls.rotateSpeed = 2.0;
-    controls.zoomSpeed = 2.2;
-    controls.panSpeed = 2.8;
-    controls.noZoom = false;
-    controls.noPan = false;
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 1.3;
-    controls.keys = [ 65, 83, 68 ];
-    controls.addEventListener( 'change', render );
-
-    stats = new Stats();
-    document.body.appendChild(stats.dom);
-
-    render();
-  }
-
-  function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    stats.update();
-    // mesh.rotation.x += 0.005;
-    // mesh.rotation.y += 0.005;
-  }
-  function render() {
-    renderer.render(scene, camera);
-  }
-
-  window.addEventListener('resize', function() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    render();
-  }, false);
-
-</script>
 </html>
