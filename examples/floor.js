@@ -193,7 +193,7 @@ window.onload = function() {
   // 创建加载器
   let loader = new THREE.FontLoader();
   // 添加字体
-  loader.load('./fonts/helvetiker_regular.typeface.json', function(font) {
+  loader.load('../fonts/helvetiker_regular.typeface.json', function(font) {
     let fontG = new THREE.TextGeometry("aaaaaa", {
       font: font,
       size: 0.5,
