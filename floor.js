@@ -7,6 +7,7 @@ window.onload = function() {
     yellow: 0xEED18D,
     borderColor: 0x101010,
   }
+  const BASIC_GRID = 1;
   // 实例box几何
   function createBoxGeo(param) {
     let geometry = new THREE.BoxGeometry(param.width, param.height, param.depth);
@@ -42,7 +43,7 @@ window.onload = function() {
   //创建相机
   var camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
   // 设置相机起始位置
-  camera.position.set(0, 8, 5);
+  camera.position.set(0, 20, 10);
   // 创建渲染器
   var renderer = new THREE.WebGLRenderer(
     { antialias: true }
@@ -58,9 +59,23 @@ window.onload = function() {
   // 添加方向辅助线
   scene.add( new THREE.AxesHelper(5));
   // 添加网格
-  scene.add(new THREE.GridHelper(50, 50));
+  scene.add(new THREE.GridHelper(30, 30));
   // 将渲染器挂载到节点
   document.getElementById("floor").appendChild(renderer.domElement);
+
+  // 视角控制器
+  var control = new THREE.OrbitControls(camera, renderer.domElement);
+  // control.autoRotate = true;  // 自动旋转
+  // control.autoRotateSpeed = 10.0;  // 自动旋转速度
+  control.enableDamping = true;  // 阻尼系数是否启用
+  control.dampingFactor = 0.5;  // 阻尼系数
+  control.enableZoom = true;   // 滚轮缩放
+  control.zoomSpeed = 2.0;     // 缩放速度
+  control.maxDistance = 200;    // 放大最远距离
+  control.minDistance = 1;      // 放大最近距离
+  control.enablePan = true;    // camera平移是否启用,默认开启(按住右键)
+  control.panSpeed = 0.5;       // camera平移速度
+  control.update();
 
   // 创建组对象
   let group_center = new THREE.Group();
@@ -72,14 +87,97 @@ window.onload = function() {
   /**
    * 中部区域组
    */
-  let center_geo_0 = createBoxGeo({ width: 2, height: 1, depth: 2, color: CONFIG.lightBlue });
-  center_geo_0.position.set(-3, 0, -3);
+  let center_geo_0 = createBoxGeo({ width: 2*BASIC_GRID, height: 1*BASIC_GRID, depth: 2*BASIC_GRID, color: CONFIG.lightBlue });
+  center_geo_0.position.set(-3*BASIC_GRID, 0*BASIC_GRID, -3*BASIC_GRID);
   let center_border_0 = createBoxBorder({ mesh: center_geo_0, color: CONFIG.borderColor });
-  let center_geo_1 = createBoxGeo({ width: 1, height: 1, depth: 2, color: CONFIG.lightBlue });
-  center_geo_1.position.set(-1.5, 0, -3);
+
+  let center_geo_1 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 2*BASIC_GRID, color: CONFIG.lightBlue });
+  center_geo_1.position.set(-1.5*BASIC_GRID, 0, -3*BASIC_GRID);
+  let center_border_1 = createBoxBorder({ mesh: center_geo_1, color: CONFIG.borderColor });
+
+  let center_geo_2 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 2*BASIC_GRID, color: CONFIG.lightBlue });
+  center_geo_2.position.set(-0.5*BASIC_GRID, 0, -3*BASIC_GRID);
+  let center_border_2 = createBoxBorder({ mesh: center_geo_2, color: CONFIG.borderColor });
+
+  let center_geo_3 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 3*BASIC_GRID, color: CONFIG.lightBlue });
+  center_geo_3.position.set(0.5*BASIC_GRID, 0, -2.5*BASIC_GRID);
+  let center_border_3 = createBoxBorder({ mesh: center_geo_3, color: CONFIG.borderColor });
+
+  let center_geo_4 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 3*BASIC_GRID, color: CONFIG.lightBlue });
+  center_geo_4.position.set(1.5*BASIC_GRID, 0, -2.5*BASIC_GRID);
+  let center_border_4 = createBoxBorder({ mesh: center_geo_4, color: CONFIG.borderColor });
+
+  let center_geo_5 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 2*BASIC_GRID, color: CONFIG.lightBlue });
+  center_geo_5.position.set(2.5*BASIC_GRID, 0, -3*BASIC_GRID);
+  let center_border_5 = createBoxBorder({ mesh: center_geo_5, color: CONFIG.borderColor });
+
+  let center_geo_6 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 2*BASIC_GRID, color: CONFIG.lightBlue });
+  center_geo_6.position.set(3.5*BASIC_GRID, 0, -3*BASIC_GRID);
+  let center_border_6 = createBoxBorder({ mesh: center_geo_6, color: CONFIG.borderColor });
+
+  let center_geo_7 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 1*BASIC_GRID, color: CONFIG.lightBlue });
+  center_geo_7.position.set(-3.5*BASIC_GRID, 0, -1.5*BASIC_GRID);
+  let center_border_7 = createBoxBorder({ mesh: center_geo_7, color: CONFIG.borderColor });
+
+  let center_geo_8 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 1*BASIC_GRID, color: CONFIG.red });
+  center_geo_8.position.set(-3.5*BASIC_GRID, 0, -0.5*BASIC_GRID);
+  let center_border_8 = createBoxBorder({ mesh: center_geo_8, color: CONFIG.borderColor });
+
+  let center_geo_9 = createBoxGeo({ width: 2*BASIC_GRID, height: 1*BASIC_GRID, depth: 2*BASIC_GRID, color: CONFIG.red });
+  center_geo_9.position.set(-2*BASIC_GRID, 0, -1*BASIC_GRID);
+  let center_border_9 = createBoxBorder({ mesh: center_geo_9, color: CONFIG.borderColor });
+
+  let center_geo_10 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 2*BASIC_GRID, color: CONFIG.blue });
+  center_geo_10.position.set(-0.5*BASIC_GRID, 0, -1*BASIC_GRID);
+  let center_border_10 = createBoxBorder({ mesh: center_geo_10, color: CONFIG.borderColor });
+
+  let center_geo_11 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 1*BASIC_GRID, color: CONFIG.red });
+  center_geo_11.position.set(0.5*BASIC_GRID, 0, -0.5*BASIC_GRID);
+  let center_border_11 = createBoxBorder({ mesh: center_geo_11, color: CONFIG.borderColor });
+
+  let center_geo_12 = createBoxGeo({ width: 1*BASIC_GRID, height: 1*BASIC_GRID, depth: 1*BASIC_GRID, color: CONFIG.blue });
+  center_geo_12.position.set(1.5*BASIC_GRID, 0, -0.5*BASIC_GRID);
+  let center_border_12 = createBoxBorder({ mesh: center_geo_12, color: CONFIG.borderColor });
+
+  let center_geo_13 = createBoxGeo({ width: 2*BASIC_GRID, height: 1*BASIC_GRID, depth: 1*BASIC_GRID, color: CONFIG.blue });
+  center_geo_13.position.set(3*BASIC_GRID, 0, -1.5*BASIC_GRID);
+  let center_border_13 = createBoxBorder({ mesh: center_geo_13, color: CONFIG.borderColor });
+
+  let center_geo_14 = createBoxGeo({ width: 2*BASIC_GRID, height: 1*BASIC_GRID, depth: 1*BASIC_GRID, color: CONFIG.blue });
+  center_geo_14.position.set(3*BASIC_GRID, 0, -0.5*BASIC_GRID);
+  let center_border_14 = createBoxBorder({ mesh: center_geo_14, color: CONFIG.borderColor });
+
   group_center.add(center_geo_0);
   group_center.add(center_border_0);
   group_center.add(center_geo_1);
+  group_center.add(center_border_1);
+  group_center.add(center_geo_2);
+  group_center.add(center_border_2);
+  group_center.add(center_geo_3);
+  group_center.add(center_border_3);
+  group_center.add(center_geo_4);
+  group_center.add(center_border_4);
+  group_center.add(center_geo_5);
+  group_center.add(center_border_5);
+  group_center.add(center_geo_6);
+  group_center.add(center_border_6);
+  group_center.add(center_geo_7);
+  group_center.add(center_border_7);
+  group_center.add(center_geo_8);
+  group_center.add(center_border_8);
+  group_center.add(center_geo_9);
+  group_center.add(center_border_9);
+  group_center.add(center_geo_10);
+  group_center.add(center_border_10);
+  group_center.add(center_geo_11);
+  group_center.add(center_border_11);
+  group_center.add(center_geo_12);
+  group_center.add(center_border_12);
+  group_center.add(center_geo_13);
+  group_center.add(center_border_13);
+  group_center.add(center_geo_14);
+  group_center.add(center_border_14);
+  group_center.translateZ(2);
   scene.add(group_center);
   
   /**
@@ -156,20 +254,8 @@ window.onload = function() {
 
   // 添加组到场景中
   scene.add(group_south);
-  
-  var control = new THREE.OrbitControls(camera, renderer.domElement);
-  // control.autoRotate = true;  // 自动旋转
-  // control.autoRotateSpeed = 10.0;  // 自动旋转速度
-  control.enableDamping = true;  // 阻尼系数是否启用
-  control.dampingFactor = 0.5;  // 阻尼系数
-  control.enableZoom = true;   // 滚轮缩放
-  control.zoomSpeed = 2.0;     // 缩放速度
-  control.maxDistance = 20;    // 放大最远距离
-  control.minDistance = 1;      // 放大最近距离
-  control.enablePan = true;    // camera平移是否启用,默认开启(按住右键)
-  control.panSpeed = 0.5;       // camera平移速度
-  control.update();
 
+  // 动画
   function animate() {
     requestAnimationFrame(animate);
     control.update();
